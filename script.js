@@ -1,125 +1,130 @@
-:root{
-  --bg: #f7fbfc;
-  --card: #ffffff;
-  --accent: #4f9d9a;
-  --muted: #6b7280;
-  --shadow: 0 8px 20px rgba(34,40,49,0.06);
-  --radius: 14px;
-  --maxw: 720px;
-  --gap: 16px;
-  font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-}
+// script.js
+// Mantén este archivo en la misma carpeta que index.html y style.css
 
-*{box-sizing:border-box}
-html,body{height:100%}
-body{
-  margin:0;
-  background: linear-gradient(180deg, #eef9f8 0%, var(--bg) 100%);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:24px;
-  color:#111827;
-  -webkit-font-smoothing:antialiased;
-  -moz-osx-font-smoothing:grayscale;
-}
+(() => {
+  const frases = [
+    "Respira. Un momento a la vez — estás haciendo lo mejor que puedes.",
+    "No tienes que ser fuerte todo el tiempo. Permitirte sentir también es valentía.",
+    "Esto también pasará. Tu valor no se mide por un mal día.",
+    "Pedir ayuda es un acto de coraje, no de debilidad.",
+    "Date permiso para descansar; cuidarte no es egoísmo.",
+    "Pequeños pasos siguen siendo progreso. Celebra lo mínimo hoy.",
+    "Tu identidad no es tu ansiedad. Eres más que lo que sientes ahora.",
+    "Has sobrevivido a días difíciles antes. Puedes hacerlo otra vez.",
+    "Puedes establecer límites y eso está bien. Tu bienestar importa.",
+    "Aunque hoy sea duro, hay cosas que aún puedes intentar respirar y seguir."
+  ];
 
-.container{
-  width:100%;
-  max-width:var(--maxw);
-  display:flex;
-  flex-direction:column;
-  gap:var(--gap);
-  align-items:stretch;
-}
+  const fraseEl = document.getElementById('frase');
+  const nuevaBtn = document.getElementById('nuevaBtn');
+  const copiarBtn = document.getElementById('copiarBtn');
+  const autoToggleBtn = document.getElementById('autoToggleBtn');
+  const telefono = document.getElementById('telefono');
 
-/* Header */
-.header{
-  text-align:left;
-}
-.header h1{
-  margin:0 0 6px 0;
-  font-size:1.6rem;
-  letter-spacing:-0.02em;
-}
-.subtitle{
-  margin:0;
-  color:var(--muted);
-  font-size:0.95rem;
-}
+  // Número de contacto inventado
+  telefono.textContent = '+57 300 123 4567';
+  telefono.href = 'tel:+573001234567';
 
-/* Card */
-.card{
-  background:var(--card);
-  border-radius:var(--radius);
-  padding:20px;
-  box-shadow:var(--shadow);
-  display:flex;
-  flex-direction:column;
-  gap:14px;
-  align-items:stretch;
-}
+  let currentIndex = -1;
+  let autoInterval = null;
+  const AUTO_SECONDS = 7000; // cada 7 segundos
 
-.frase{
-  min-height:96px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  text-align:center;
-  padding:20px;
-  border-radius:10px;
-  background: linear-gradient(180deg, rgba(79,157,154,0.06), rgba(79,157,154,0.03));
-  font-size:1.125rem;
-  line-height:1.4;
-  color:#0f172a;
-  font-weight:600;
-  transition:transform .28s ease, opacity .28s ease;
-}
+  function mostrarFrase(index, animate = true){
+    if (index == null) index = Math.floor(Math.random() * frases.length);
+    currentIndex = index % frases.length;
+    // animación simple
+    if (animate) {
+      fraseEl.style.opacity = 0;
+      fraseEl.style.transform = 'translateY(6px)';
+      setTimeout(() => {
+        fraseEl.textContent = frases[currentIndex];
+        fraseEl.style.opacity = 1;
+        fraseEl.style.transform = 'translateY(0)';
+      }, 220);
+    } else {
+      fraseEl.textContent = frases[currentIndex];
+    }
+  }
 
-/* Controls */
-.controls{
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
-  justify-content:center;
-}
-.btn{
-  background:var(--accent);
-  color:white;
-  border:0;
-  padding:10px 14px;
-  border-radius:10px;
-  font-weight:600;
-  cursor:pointer;
-  box-shadow: 0 6px 14px rgba(79,157,154,0.12);
-}
-.btn:active{transform:translateY(1px)}
-.btn.outline{
-  background:transparent;
-  color:var(--accent);
-  border:1px solid rgba(79,157,154,0.14);
-  box-shadow:none;
-}
-.extra{ text-align:center; margin-top:2px;}
-.nota{
-  color:var(--muted);
-  font-size:0.85rem;
-}
-.nota a{
-  color:var(--accent);
-  text-decoration:none;
-  font-weight:700;
-}
+  function mostrarOtra(){
+    // evita repetir la misma inmediatamente
+    let next = Math.floor(Math.random() * frases.length);
+    if (frases.length > 1) {
+      while (next === currentIndex) {
+        next = Math.floor(Math.random() * frases.length);
+      }
+    }
+    mostrarFrase(next);
+  }
 
-/* Footer */
-.footer{
-  text-align:center;
-  color:var(--muted);
-  font-size:0.85rem;
-}
+  function copiarActual(){
+    const text = fraseEl.textContent || '';
+    if (!text) return;
+    // usa el API de Clipboard si está disponible
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text)
+        .then(() => {
+          copiarBtn.textContent = 'Copiado ✓';
+          setTimeout(()=> copiarBtn.textContent = 'Copiar', 1600);
+        })
+        .catch(()=> {
+          alert('No fue posible copiar. Selecciona el texto manualmente.');
+        });
+    } else {
+      // fallback
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      try {
+        document.execCommand('copy');
+        copiarBtn.textContent = 'Copiado ✓';
+        setTimeout(()=> copiarBtn.textContent = 'Copiar', 1600);
+      } catch {
+        alert('No fue posible copiar. Selecciona el texto manualmente.');
+      } finally {
+        document.body.removeChild(ta);
+      }
+    }
+  }
 
-/* Responsive */
-@media (max-width:420px){
-  .frase{ font-size:1rem; padding:16px;}
-  .btn{ padding:9px 12px; }
-}
+  function toggleAuto(){
+    if (autoInterval) {
+      clearInterval(autoInterval);
+      autoInterval = null;
+      autoToggleBtn.textContent = 'Auto: Off';
+      autoToggleBtn.classList.remove('active');
+    } else {
+      autoInterval = setInterval(mostrarOtra, AUTO_SECONDS);
+      autoToggleBtn.textContent = 'Auto: On';
+      autoToggleBtn.classList.add('active');
+    }
+  }
+
+  // eventos
+  nuevaBtn.addEventListener('click', mostrarOtra);
+  copiarBtn.addEventListener('click', copiarActual);
+  autoToggleBtn.addEventListener('click', toggleAuto);
+
+  // Mostrar una frase al cargar (usar última guardada en sessionStorage si existe)
+  const savedIndex = sessionStorage.getItem('respira_index');
+  if (savedIndex !== null) {
+    mostrarFrase(parseInt(savedIndex, 10), false);
+  } else {
+    mostrarFrase(null, false);
+  }
+
+  // guardar en session para que persista en la misma pestaña
+  window.addEventListener('beforeunload', () => {
+    sessionStorage.setItem('respira_index', currentIndex);
+  });
+
+  // accesibilidad: permite intercambiar frase con barra espaciadora cuando el foco está en la página
+  window.addEventListener('keydown', (e) => {
+    if (e.code === 'Space' && document.activeElement === document.body) {
+      e.preventDefault();
+      mostrarOtra();
+    }
+  });
+
+})();
