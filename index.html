@@ -1,12 +1,43 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Respira - Frases de apoyo</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-    <h1>Pronto HelpNow</h1>
-    <script src="script.js"></script>
+  <main class="container">
+    <header class="header">
+      <h1>Respira — frases de apoyo</h1>
+      <p class="subtitle">Pequeños recordatorios para cuando el día pesa. No estás solo/a.</p>
+    </header>
+
+    <section class="card">
+      <div id="frase" class="frase" role="status" aria-live="polite">
+        <!-- La frase aparecerá aquí -->
+      </div>
+
+      <div class="controls">
+        <button id="nuevaBtn" class="btn" title="Mostrar otra frase">Otra frase</button>
+        <button id="copiarBtn" class="btn outline" title="Copiar frase">Copiar</button>
+        <button id="autoToggleBtn" class="btn outline" title="Activar/desactivar auto-rotación">Auto: Off</button>
+      </div>
+
+      <div class="extra">
+        <small class="nota">
+          Si estás en una crisis o riesgo inmediato llama al número de emergencia local. 
+          Número de contacto para emergencias (ficticio): 
+          <a id="telefono" href="tel:+573001234567" aria-label="Llamar al número de emergencia">+57 300 123 4567</a>
+        </small>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <p>Esta herramienta ofrece apoyo puntual. Busca ayuda profesional si lo necesitas.</p>
+    </footer>
+  </main>
+
+  <script src="script.js"></script>
 </body>
 </html>
